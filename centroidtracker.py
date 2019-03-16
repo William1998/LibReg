@@ -99,6 +99,7 @@ class CentroidTracker():
 
 			# loop over the combination of the (row, column) index
 			# tuples
+			count = 0
 			for (row, col) in zip(rows, cols):
 				# if we have already examined either the row or
 				# column value before, ignore it
@@ -117,6 +118,7 @@ class CentroidTracker():
 				# column indexes, respectively
 				usedRows.add(row)
 				usedCols.add(col)
+				count += 1
 
 			# compute both the row and column index we have NOT yet
 			# examined

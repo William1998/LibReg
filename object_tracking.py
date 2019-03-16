@@ -84,9 +84,9 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 				del strangerList[key]
 			except:
 				pass
-			break
+			continue
 
-		if key in objects:
+		if key in objects.keys():
 			objects[key][0] = detections[count]
 			objects[key][1] = cata[count][0]
 			objects[key][2] = cata[count][1]
@@ -116,6 +116,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 				if len(strangerList) > 10:
 					strangerList.pop(0)
 			elif objects[key][2] != "person" and objects[key][0][1] < 0.5 and objects[key][5] is None:
+				print("some one put thing down!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
 				personKey = nearstPerson(key,objects)
 				if personKey is not None and objects[personKey][4] is None and personKey in strangerList:
 					print("Find Nearst Person")
@@ -127,7 +128,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 				elif personKey is not None:
 					objects[key][5] = objects[personKey][4]
 
-		elif count < len(detections):
+		else:
 			print(detections[count])
 			print( cata[count][0])
 			objects[key] = [detections[count], cata[count][0], cata[count][1], 0, None, None]
