@@ -80,6 +80,7 @@ class ObjDector():
             height = box[3]
             self.drawPred(classIds[i], confidences[i], left, top, left + width, top + height,frame)
 
+
     def getOutputsNames(self,net):
         # Get the names of all the layers in the network
         layersNames = net.getLayerNames()
@@ -92,9 +93,9 @@ class ObjDector():
 
         # Scan through all the bounding boxes output from the network and keep only the
         # ones with high confidence scores. Assign the box's class label as the class with the highest score.
-        items = []
-        confidences = []
-        boxes = []
+        tempItems = []
+        tempConfidences = []
+        tempBoxes = []
         for out in outs:
             for detection in out:
 
@@ -119,10 +120,54 @@ class ObjDector():
                     element.append(label)
                     element.append(coord)
 
-                    items.append(element)
-                    confidences.append(float(confidence))
-                    boxes.append([left, top, width, height])
+                    tempItems.append(element)
+                    tempConfidences.append(float(confidence))
+                    tempBoxes.append([left, top, width, height])
+
+        indices = cv.dnn.NMSBoxes(tempBoxes, tempConfidences, self.confThreshold, self.nmsThreshold)
+        items = []
+        confidences = []
+        boxes = []
+        for i in indices:
+
+            i=i[0]
+            items.append(tempItems[i])
+            confidences.append(tempConfidences[i])
+            boxes.append(tempBoxes[i])
+
         return items,confidences,boxes
+
+    def drawBox(self,items,confidences,boxes,frame):
+        for i in range(len(items)):
+
+            box = boxes[i]
+            left = box[0]
+            top = box[1]
+            width = box[2]
+            height = box[3]
+
+            classId =items[i][0]
+            conf = confidences[i]
+            right = left + width
+            bottom = top + height
+
+            # Draw a bounding box.
+            cv.rectangle(frame, (left, top), (right, bottom), (255, 178, 50), 3)
+
+            label = '%.2f' % conf
+
+            # Get the label for the class name and its confidence
+            if self.classes:
+                assert (classId < len(self.classes))
+                label = '%s:%s' % (self.classes[classId], label)
+
+            # Display the label at the top of the bounding box
+            labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+            top = max(top, labelSize[1])
+            cv.rectangle(frame, (left, top - round(1.5 * labelSize[1])),
+                         (left + round(1.5 * labelSize[0]), top + baseLine),
+                         (255, 255, 255), cv.FILLED)
+            cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 0), 1)
 
     def detect(self,frame):
         blob = cv.dnn.blobFromImage(frame, 1 / 255, (self.inpWidth, self.inpHeight), [0, 0, 0], 1, crop=False)
@@ -130,7 +175,6 @@ class ObjDector():
         outs = self.net.forward(self.getOutputsNames(self.net))
 
         # Remove the bounding boxes with low confidence
-        self.postprocess(frame, outs)
         t, _ = self.net.getPerfProfile()
         label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
         cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
