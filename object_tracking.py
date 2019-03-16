@@ -129,7 +129,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 				else:
 					objects[key][5] = objects[personKey][4]
 
-		elif count in detections :
+		elif count < len(detections):
 			print(detections[count])
 			print( cata[count][0])
 			objects[key] = [detections[count], cata[count][0], cata[count][1], 0, None, None]
