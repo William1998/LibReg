@@ -3,10 +3,10 @@ import numpy as np
 
 class ObjDector():
     def __init__(self):
-        self.confThreshold = 0.5  # Confidence threshold
+        self.confThreshold = 0.4  # Confidence threshold
         self.nmsThreshold = 0.4  # Non-maximum suppression threshold
-        self.inpWidth = 416  # Width of network's input image
-        self.inpHeight = 416  # Height of network's input image
+        self.inpWidth = 288  # Width of network's input image
+        self.inpHeight = 288  # Height of network's input image
 
         # Load names of classes
         self.classesFile = "./pre-trained-model/coco.names";
@@ -157,9 +157,7 @@ class ObjDector():
             label = '%.2f' % conf
 
             # Get the label for the class name and its confidence
-            if self.classes:
-                assert (classId < len(self.classes))
-                label = '%s:%s' % (self.classes[classId], label)
+            label = '%s:%s' % (items[i][1], label)
 
             # Display the label at the top of the bounding box
             labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
@@ -169,14 +167,16 @@ class ObjDector():
                          (255, 255, 255), cv.FILLED)
             cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 0), 1)
 
+        # Remove the bounding boxes with low confidence
+        t, _ = self.net.getPerfProfile()
+        label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
+        cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
+
     def detect(self,frame):
         blob = cv.dnn.blobFromImage(frame, 1 / 255, (self.inpWidth, self.inpHeight), [0, 0, 0], 1, crop=False)
         self.net.setInput(blob)
         outs = self.net.forward(self.getOutputsNames(self.net))
 
-        # Remove the bounding boxes with low confidence
-        t, _ = self.net.getPerfProfile()
-        label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
-        cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
+
         return self.getCoord(frame,outs)
 
