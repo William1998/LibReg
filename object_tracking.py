@@ -5,6 +5,7 @@
 #from pyimagesearch.centroidtracker import CentroidTracker
 #from imutils.video import VideoStream
 import numpy as np
+from collections import OrderedDict
 # import cv2
 
 ## construct the argument parse and parse the arguments
@@ -46,7 +47,7 @@ import numpy as np
 # net.setInput(blob)
 
 
-def track_object(ct, object_list, size):
+def track_object(ct, object_list, cata, size):
 	detections = object_list
 	rects = []
 	H = size[0]
@@ -70,6 +71,12 @@ def track_object(ct, object_list, size):
 
 	# update our centroid tracker using the computed set of bounding
 	# box rectangles
-	objects = ct.update(rects)
+	# objects = ct.update(rects)
+	objects = OrderedDict()
+
+	count = 0
+	for key, value in ct.update(rects).items():
+		objects[key] = [detections[count], cata[count][0], cata[count][1], 0, None, None]
+		count += 1
 
 	return objects
