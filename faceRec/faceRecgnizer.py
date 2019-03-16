@@ -15,16 +15,27 @@ class FaceRecgnizer():
             self.model.write(self.modelPath)
             print("initial model train finish")
 
-    def predict(self,path):
-        image = cv.imread(path)
+    def predict(self,image):
 
         # detect face
         face, rect = self.detect_face(image)
         label,confidence = self.model.predict(face)
         return label, confidence
 
-    def updateModel(self,path):
-        faces, labels = self.prepare_training_data(path)
+    def updateModel(self,imgList,newName):
+        faces= []
+        labels = []
+        for image in imgList:
+            face, rect = self.detect_face(image)
+
+        # ------STEP-4--------
+        # for the purpose of this tutorial
+        # we will ignore faces that are not detected
+            if face is not None:
+                # add face to list of faces
+                faces.append(face)
+                # add label for this face
+                labels.append(newName)
         self.model.update(faces,labels)
         self.model.write(self.modelPath)
         print("update done")

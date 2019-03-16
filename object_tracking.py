@@ -48,8 +48,7 @@ from collections import OrderedDict
 # 	(104.0, 177.0, 123.0))
 # net.setInput(blob)
 
-
-def track_object(ct, objects, items, cata, size,frame, faceRec,x):
+def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,nameCount):
 	detections = items
 	rects = []
 	H = size[0]
@@ -76,25 +75,76 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x):
 	# objects = ct.update(rects)
 
 	count = 0
+	print(len(detections))
 	for key, value in ct.update(rects).items():
 		# update the coordinates of an object if it already exists
 
-		if ct.disappeared[key] > 2:
-			del objects[key]
+		if ct.disappeared[key] > 0:
+			try:
+				del objects[key]
+				del strangerList[key]
+			except:
+				pass
 			break
 
 		if key in objects:
 			objects[key][0] = detections[count]
-			if objects[key][2] == "Person" and objects[key][3] == 0:
+			objects[key][1] = cata[count][0]
+			objects[key][2] = cata[count][1]
+			print(objects[key][2])
+			print(objects[key][3])
+			if objects[key][2] == 'person' and objects[key][3] == 0:
+				print("Perform face detection: ", objects[key][2])
 				img = x.cropImage(frame,objects[key][0])
-				cv.imwrite("./cache/tempFace.jpg", img.astype(np.uint8))
-				label, confidence = faceRec.predict("./cache/tempFace.jpg")
-				objects[key][3] = 1
-				if confidence >= 0.5:
-					objects[key][4] = label
+				try:
+					print("try rec")
+					label, confidence = faceRec.predict(img)
+					objects[key][3] = 1
+					if confidence >= 0.7:
+						objects[key][4] = label
+						print("Known person: ",label)
+					else:
+						print("Unknown person")
+					print("recognize done")
+				except Exception as e:
+					print(e)
+					print("failed")
+					pass
+			elif objects[key][2] == "person" and objects[key][3] == 1 and objects[key][4] is None:
+				if key not in strangerList:
+					strangerList[key] = []
+				img = x.cropImage(frame, objects[key][0])
+				strangerList.append(img)
+				if len(strangerList) > 10:
+					strangerList.pop(0)
+			elif objects[key][2] != "person" and objects[key][0][1] < 0.5 and objects[key][5] is None:
+				personKey = nearstPerson(key,objects)
+				if objects[personKey][4] is None:
+					nameCount += 1
+					faceRec.updateModel(strangerList[personKey],nameCount)
+					with open("count") as f:
+						f.write(nameCount)
+					objects[key][5] = nameCount
+				else:
+					objects[key][5] = objects[personKey][4]
+
 		else:
+			print(detections[count])
+			print( cata[count][0])
 			objects[key] = [detections[count], cata[count][0], cata[count][1], 0, None, None]
 
 		count += 1
 
 	# return objects
+def nearstPerson(objectKey,objects):
+	personKey = None
+	objectCoord = objects[objectKey][0]
+	currdistance = 1000
+	for key in objects:
+		if key != objectKey and objects[key][2] == 'person':
+			personCoord = objects[key][0]
+			distance = (objectCoord[0]-personCoord[0])**2 + (objectCoord[1]-personCoord[1])**2
+			if distance < currdistance:
+				currdistance = distance
+				personKey = key
+	return personKey
