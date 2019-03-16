@@ -35,7 +35,3 @@ def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
         
     server.close()
     cv.destroyAllWindows()
-
-# Used to test
-if __name__ == '__main__':
-    AcceptImage()
