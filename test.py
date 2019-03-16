@@ -6,7 +6,7 @@ x = ObjDector.ObjDector()
 
 cap = cv.VideoCapture("./test/test1.jpg")
 retval, image = cap.read()
-x.detect(image)
+items, confidences, boxes = x.detect(image)
 cv.imwrite("./test/testresult.jpg", image.astype(np.uint8))
 
 
