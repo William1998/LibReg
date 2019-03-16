@@ -4,4 +4,5 @@ import numpy
 import socket
 import struct
 
-def AcceptImage(HOST = '192.168.43.79', PORT)
+def AcceptImage(HOST = '192.168.43.79', PORT):
+    
