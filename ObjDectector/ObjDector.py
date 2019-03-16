@@ -86,8 +86,8 @@ class ObjDector():
         for i in items.keys():
             item = items[i]
             coord = item[0]
-            frameWidth = frame.shape(1)
-            frameHeight = frame.shape(1)
+            frameWidth = frame.shape[1]
+            frameHeight = frame.shape[0]
             center_x = int(coord[0] * frameWidth)
             center_y = int(coord[1] * frameHeight)
             width = int(coord[2] * frameWidth)
@@ -109,7 +109,7 @@ class ObjDector():
 
 
             # Get the label for the class name and its confidence
-            label = '%s:%s' % (item[2],i)
+            label = '%s' % (item[2])
 
             # Display the label at the top of the bounding box
             labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
@@ -130,4 +130,3 @@ class ObjDector():
         outs = self.net.forward(self.getOutputsNames(self.net))
 
         return self.getCoord(frame,outs)
-

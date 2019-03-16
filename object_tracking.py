@@ -77,6 +77,8 @@ def track_object(ct, objects, items, cata, size):
 	count = 0
 	for key, value in ct.update(rects).items():
 		# update the coordinates of an object if it already exists
+		if count >= len(detections):
+			break
 		if key in objects:
 			objects[key][0] = detections[count]
 		else:
