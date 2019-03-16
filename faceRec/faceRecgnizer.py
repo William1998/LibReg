@@ -21,7 +21,11 @@ class FaceRecgnizer():
         # detect face
         face, rect = self.detect_face(image)
         label,confidence = self.model.predict(face)
+<<<<<<< HEAD
         print(label, confidence)
+=======
+        return label, confidence
+>>>>>>> 1b5a30006579c93b409f27a7404112ede5b7c0b2
 
     def updateModel(self,path):
         faces, labels = self.prepare_training_data(path)
