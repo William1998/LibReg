@@ -82,7 +82,7 @@ class ObjDector():
 
         return items,cata,confidences,boxes
 
-    def drawBox(self,items,frame):
+    def drawBox(self,items,frame,faceList):
         for i in items.keys():
             item = items[i]
             coord = item[0]
@@ -115,6 +115,7 @@ class ObjDector():
 
             if item[5] is not None:
                 label += ":Face:"+str(item[5])
+
 
             # Display the label at the top of the bounding box
             labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)

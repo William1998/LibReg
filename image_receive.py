@@ -37,6 +37,7 @@ def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
     #Global things
     detectedObjects = OrderedDict()
     strangerList = OrderedDict()
+    faceList = OrderedDict()
     ct = CentroidTracker()
 
     while True:
@@ -46,8 +47,9 @@ def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
         
         # Waitting for frame process function
         items, cata, confidence, boxed = x.detect(imagedecode)
-        track_object(ct, detectedObjects, items, cata, [imagedecode.shape[0], imagedecode.shape[1]],imagedecode,faceRec,x,strangerList,nameCount)
-        x.drawBox(detectedObjects,imagedecode)
+        track_object(ct, detectedObjects, items, cata, [imagedecode.shape[0], imagedecode.shape[1]],\
+                     imagedecode,faceRec,x,strangerList,nameCount,faceList)
+        x.drawBox(detectedObjects,imagedecode,faceList)
         cv.imshow('frames', imagedecode)
         if cv.waitKey(1) == 27:
             break

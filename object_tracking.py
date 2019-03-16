@@ -48,7 +48,7 @@ from collections import OrderedDict
 # 	(104.0, 177.0, 123.0))
 # net.setInput(blob)
 
-def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,nameCount):
+def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,nameCount,faceList):
 	detections = items
 	rects = []
 	H = size[0]
@@ -102,6 +102,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 					objects[key][3] = 1
 					if confidence >= 1:
 						objects[key][4] = label
+						faceList[label] = faceRec.detect_face(img)
 						print("Known person: ",label)
 					else:
 						print("Unknown person")
@@ -139,12 +140,15 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 				img = x.cropImage(frame, objects[key][0])
 				strangerList[key].append(img)
 				if len(strangerList) > 10:
-					strangerList.pop(0)	
+					strangerList[key].pop(0)
 
 		else:
-			print(detections[count])
-			print( cata[count][0])
-			objects[key] = [detections[count], cata[count][0], cata[count][1], 0, None, None]
+			try:
+				print(detections[count])
+				print( cata[count][0])
+				objects[key] = [detections[count], cata[count][0], cata[count][1], 0, None, None]
+			except Exception as e:
+				print(e)
 
 		count += 1
 	

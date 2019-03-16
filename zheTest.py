@@ -13,6 +13,4 @@ from faceRec import faceRecgnizer
 # cv.imwrite("./test/testresult.jpg", image.astype(np.uint8))
 
 x = faceRecgnizer.FaceRecgnizer()
-img = cv.imread("./test/WIN_20190317_01_23_33_Pro.jpg")
-face, confidence = x.predict(img)
-print(face,confidence)
+
