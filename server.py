@@ -11,9 +11,9 @@ server=socket.socket(socket.AF_INET,socket.SOCK_DGRAM) #socket对象
 server.connect((HOST,PORT))
 print('now starting to send frames...')
 capture= cv.VideoCapture(0)
+#capture.set(cv.CAP_PROP_BUFFERSIZE, 3)
 try:
     while True:
-        print('TEST')
         success,frame=capture.read()
         while not success and frame is None:
             success,frame=capture.read()  #获取视频帧
