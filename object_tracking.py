@@ -75,9 +75,8 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 	# objects = ct.update(rects)
 
 	count = 0
-	test = ct.update(rects).items()
 
-	for key, value in test:
+	for key, value in ct.update(rects).items():
 		# update the coordinates of an object if it already exists
 		
 		if ct.disappeared[key] > 0:
@@ -88,7 +87,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 			continue
 
 		if key in objects.keys():
-			objects[key][0] = value / np.array([W, H, W, H])
+			objects[key][0] = detections[count]
 		        		 
 			if objects[key][2] == 'person' and objects[key][3] == 0:
 				print("Perform face detection: ", objects[key][2])
