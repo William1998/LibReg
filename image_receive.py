@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import cv2
+import cv2 as cv
 import numpy
 import socket
 import struct
@@ -16,16 +16,16 @@ def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
     while True:
         data, address = server.recvfrom(buffersize) # receive image
         data = numpy.array(bytearray(data))
-        imagedecode = cv2.imdecode(data, 1)
+        imagedecode = cv.imdecode(data, 1)
         print("Received one frame")
-        cv2.imshow('frames', imagedecode)
+        cv.imshow('frames', imagedecode)
         
         # Waitting for frame process function
         
-        if cv2.waitKey(1) == 27:
+        if cv.waitKey(1) == 27:
             break
         
     server.close()
-    cv2.destroyAllWindows()
+    cv.destroyAllWindows()
 if __name__ == '__main__':
     AcceptImage()
