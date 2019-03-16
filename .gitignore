@@ -3,3 +3,7 @@ test.py
 test2.py
 pre-trained-model/
 test/
+__pycache__/object_tracking.cpython-37.pyc
+ObjDectector/__pycache__/ObjDector.cpython-37.pyc
+pre-trained-model/yolov3.weights
+test.py
