@@ -86,8 +86,8 @@ class ObjDector():
         for i in items.keys():
             item = items[i]
             coord = item[0]
-            frameWidth = frame.shape(1)
-            frameHeight = frame.shape(1)
+            frameWidth = frame.shape[1]
+            frameHeight = frame.shape[0]
             center_x = int(coord[0] * frameWidth)
             center_y = int(coord[1] * frameHeight)
             width = int(coord[2] * frameWidth)
