@@ -127,8 +127,15 @@ class ObjDector():
 
         # Remove the bounding boxes with low confidence
         t, _ = self.net.getPerfProfile()
+        thecolor = (255,255,255)
+        if item[6] == 0:
+            thecolor = (255, 255, 255)
+        elif item[6] == 1:
+            thecolor = (34,139,34)
+        elif item[6] == 2:
+            thecolor = (255,0,0)
         label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
-        cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
+        cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, color = thecolor)
 
     def detect(self,frame):
         blob = cv.dnn.blobFromImage(frame, 1 / 255, (self.inpWidth, self.inpHeight), [0, 0, 0], 1, crop=False)

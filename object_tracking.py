@@ -118,8 +118,6 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 				if personKey is not None and objects[personKey][4] is None and personKey in strangerList and len(strangerList[personKey])>0:
 					print("Find Nearst Person")
 					nameCount += 1
-
-					print("train success~~~~~~`")					
 					try:
 						faceRec.updateModel(strangerList[personKey],nameCount)
 						with open("count") as f:
@@ -132,6 +130,35 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 						pass
 				elif personKey is not None:
 					objects[key][5] = objects[personKey][4]
+				objects[key][6] = 0
+
+			elif objects[key][2] != "person" and objects[key][0][1] < 0.5 and objects[key][5] is not None:
+				print("some one take thing away00000000000000000000000000000")
+				personKey = nearstPerson(key, objects)
+				if personKey is not None:
+					if objects[personKey][4] == objects[key][5]:
+						objects[key][6] = 1
+						#push to databse that object taken by master
+					else:
+						objects[key][6] = 2
+						if objects[key][5] is None:
+							nameCount += 1
+
+							try:
+								faceRec.updateModel(strangerList[personKey], nameCount)
+								with open("count") as f:
+									f.write(nameCount)
+								objects[key][5] = nameCount
+								print("train success~~~~~~`")
+							except Exception as e:
+								print(e)
+								print("train failxxxxxxxx`")
+								pass
+							print("Taken by stranger")
+						else:
+							print("Taken by master")
+					        # push to databse that object taken by master
+
 			
 			if objects[key][2] == "person" and objects[key][4] is None:
 				print("collect stranger")
@@ -144,9 +171,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 
 		else:
 			try:
-				print(detections[count])
-				print( cata[count][0])
-				objects[key] = [detections[count], cata[count][0], cata[count][1], 0, None, None]
+				objects[key] = [detections[count], cata[count][0], cata[count][1], 0, None, None, 0]
 			except Exception as e:
 				print(e)
 
