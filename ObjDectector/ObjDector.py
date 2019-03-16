@@ -109,7 +109,7 @@ class ObjDector():
 
 
             # Get the label for the class name and its confidence
-            label = '%s' % (item[2])
+            label = '%s:%s' % (item[2],i)
 
             # Display the label at the top of the bounding box
             labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
