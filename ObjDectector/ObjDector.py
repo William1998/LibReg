@@ -3,8 +3,8 @@ import numpy as np
 
 class ObjDector():
     def __init__(self, modelPath,cfgPath,pixel):
-        self.confThreshold = 0.3  # Confidence threshold
-        self.nmsThreshold = 2  # Non-maximum suppression threshold
+        self.confThreshold = 0.4  # Confidence threshold
+        self.nmsThreshold = 0.7  # Non-maximum suppression threshold
         self.inpWidth = pixel  # Width of network's input image
         self.inpHeight = pixel  # Height of network's input image
 

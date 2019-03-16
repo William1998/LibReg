@@ -100,7 +100,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 					print("try rec")
 					label, confidence = faceRec.predict(img)
 					objects[key][3] = 1
-					if confidence >= 1:
+					if confidence >= 0.6:
 						objects[key][4] = label
 						faceList[label] = faceRec.detect_face(img)
 						print("Known person: ",label)
