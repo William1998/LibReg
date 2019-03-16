@@ -119,7 +119,8 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 					strangerList.pop(0)
 			elif objects[key][2] != "person" and objects[key][0][1] < 0.5 and objects[key][5] is None:
 				personKey = nearstPerson(key,objects)
-				if objects[personKey][4] is None:
+				if objects[personKey][4] is None and personKey in strangerList:
+					print("Find Nearst Person")
 					nameCount += 1
 					faceRec.updateModel(strangerList[personKey],nameCount)
 					with open("count") as f:
