@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/LibReg.iml" filepath="$PROJECT_DIR$/.idea/LibReg.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/LibRegLocal.iml" filepath="$PROJECT_DIR$/.idea/LibRegLocal.iml" />
     </modules>
   </component>
