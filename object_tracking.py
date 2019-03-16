@@ -88,10 +88,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 			continue
 
 		if key in objects.keys():
-			objects[key][0] = detections[count]
-			objects[key][1] = cata[count][0]
-			objects[key][2] = cata[count][1]
-			
+			objects[key][0] = value / np.array([W, H, W, H])
 		        		 
 			if objects[key][2] == 'person' and objects[key][3] == 0:
 				print("Perform face detection: ", objects[key][2])
@@ -171,7 +168,9 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 
 		else:
 			try:
-				objects[key] = [detections[count], cata[count][0], cata[count][1], 0, None, None, 0]
+				coord = value / np.array([W, H, W, H])
+				objects[key] = [coord, cata[count][0] if cata[count][0] is not None else None,\
+								cata[count][1] if cata[count][1] is not None else None, 0, None, None, 0]
 			except Exception as e:
 				print(e)
 
