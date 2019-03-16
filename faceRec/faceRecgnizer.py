@@ -11,9 +11,13 @@ class FaceRecgnizer():
         else:
             print("No model, train initial one")
             faces, labels = self.prepare_training_data("initialFaces/")
-            self.model.train(faces, np.array(labels))
-            self.model.write(self.modelPath)
-            print("initial model train finish")
+            print("have faces:", len(faces))
+            if len(faces) !=0:
+                self.model.train(faces, np.array(labels))
+                self.model.write(self.modelPath)
+                print("initial model train finish")
+            else:
+                print("empty faces")
 
     def predict(self,image):
 
@@ -26,6 +30,7 @@ class FaceRecgnizer():
         faces= []
         labels = []
         for image in imgList:
+            print(image)
             face, rect = self.detect_face(image)
 
         # ------STEP-4--------

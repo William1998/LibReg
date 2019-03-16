@@ -75,13 +75,14 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 	# objects = ct.update(rects)
 
 	count = 0
-	for key, value in ct.update(rects).items():
-		# update the coordinates of an object if it already exists
+	test = ct.update(rects).items()
 
+	for key, value in test:
+		# update the coordinates of an object if it already exists
+		
 		if ct.disappeared[key] > 0:
 			try:
 				del objects[key]
-				del strangerList[key]
 			except:
 				pass
 			continue
@@ -90,7 +91,8 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 			objects[key][0] = detections[count]
 			objects[key][1] = cata[count][0]
 			objects[key][2] = cata[count][1]
-
+			
+		        		 
 			if objects[key][2] == 'person' and objects[key][3] == 0:
 				print("Perform face detection: ", objects[key][2])
 				img = x.cropImage(frame,objects[key][0])
@@ -98,7 +100,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 					print("try rec")
 					label, confidence = faceRec.predict(img)
 					objects[key][3] = 1
-					if confidence >= 0.7:
+					if confidence >= 1:
 						objects[key][4] = label
 						print("Known person: ",label)
 					else:
@@ -108,25 +110,36 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 					print(e)
 					print("failed")
 					pass
-			elif objects[key][2] == "person" and objects[key][3] == 1 and objects[key][4] is None:
+			elif objects[key][2] != "person" and objects[key][0][1] > 0.5 and objects[key][5] is None:
+				print("some one put thing down!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
+				personKey = nearstPerson(key,objects)
+
+				if personKey is not None and objects[personKey][4] is None and personKey in strangerList and len(strangerList[personKey])>0:
+					print("Find Nearst Person")
+					nameCount += 1
+
+					print("train success~~~~~~`")					
+					try:
+						faceRec.updateModel(strangerList[personKey],nameCount)
+						with open("count") as f:
+							f.write(nameCount)
+						objects[key][5] = nameCount
+						print("train success~~~~~~`")
+					except Exception as e:
+						print(e)
+						print("train failxxxxxxxx`")
+						pass
+				elif personKey is not None:
+					objects[key][5] = objects[personKey][4]
+			
+			if objects[key][2] == "person" and objects[key][4] is None:
+				print("collect stranger")
 				if key not in strangerList:
 					strangerList[key] = []
 				img = x.cropImage(frame, objects[key][0])
-				strangerList.append(img)
+				strangerList[key].append(img)
 				if len(strangerList) > 10:
-					strangerList.pop(0)
-			elif objects[key][2] != "person" and objects[key][0][1] < 0.5 and objects[key][5] is None:
-				print("some one put thing down!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
-				personKey = nearstPerson(key,objects)
-				if personKey is not None and objects[personKey][4] is None and personKey in strangerList:
-					print("Find Nearst Person")
-					nameCount += 1
-					faceRec.updateModel(strangerList[personKey],nameCount)
-					with open("count") as f:
-						f.write(nameCount)
-					objects[key][5] = nameCount
-				elif personKey is not None:
-					objects[key][5] = objects[personKey][4]
+					strangerList.pop(0)	
 
 		else:
 			print(detections[count])
@@ -134,6 +147,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 			objects[key] = [detections[count], cata[count][0], cata[count][1], 0, None, None]
 
 		count += 1
+	
 
 	# return objects
 def nearstPerson(objectKey,objects):
