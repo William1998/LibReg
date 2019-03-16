@@ -115,27 +115,26 @@ class ObjDector():
 
             if item[5] is not None:
                 label += ":Face:"+str(item[5])
-
-
+            thecolor = (255,255,255)
+            if item[6] == 0:
+                thecolor = (255, 255, 255)
+            elif item[6] == 1:
+                thecolor = (34,139,34)
+            elif item[6] == 2:
+                thecolor = (255,0,0)            
             # Display the label at the top of the bounding box
             labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
             top = max(top, labelSize[1])
             cv.rectangle(frame, (left, top - round(1.5 * labelSize[1])),
                          (left + round(1.5 * labelSize[0]), top + baseLine),
                          (255, 255, 255), cv.FILLED)
-            cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 0), 1)
+            cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.75, 1, color=thecolor)
 
         # Remove the bounding boxes with low confidence
         t, _ = self.net.getPerfProfile()
-        thecolor = (255,255,255)
-        if item[6] == 0:
-            thecolor = (255, 255, 255)
-        elif item[6] == 1:
-            thecolor = (34,139,34)
-        elif item[6] == 2:
-            thecolor = (255,0,0)
+        
         label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
-        cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, color = thecolor)
+        cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, color = (0,0,255))
 
     def detect(self,frame):
         blob = cv.dnn.blobFromImage(frame, 1 / 255, (self.inpWidth, self.inpHeight), [0, 0, 0], 1, crop=False)
