@@ -15,7 +15,7 @@ def SendFrame(host, port, image):
     result, imgencode=cv.imencode('.jpg',image,[cv.IMWRITE_JPEG_QUALITY,50])
     server.sendall(imgencode)
 
-def AcceptImage(HOST = '192.168.43.249', PORT = 10000):
+def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
     buffersize = 65535 // 2
     
     #Create server object
