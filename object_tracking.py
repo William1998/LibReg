@@ -48,8 +48,8 @@ from collections import OrderedDict
 # net.setInput(blob)
 
 
-def track_object(ct, object_list, cata, size):
-	detections = object_list
+def track_object(ct, objects, items, cata, size):
+	detections = items
 	rects = []
 	H = size[0]
 	W = size[1]
@@ -73,11 +73,14 @@ def track_object(ct, object_list, cata, size):
 	# update our centroid tracker using the computed set of bounding
 	# box rectangles
 	# objects = ct.update(rects)
-	objects = OrderedDict()
 
 	count = 0
 	for key, value in ct.update(rects).items():
-		objects[key] = [detections[count], cata[count][0], cata[count][1], 0, None, None]
+		# update the coordinates of an object if it already exists
+		if key in objects:
+			objects[key][0] = detections[count]
+		else:
+			objects[key] = [detections[count], cata[count][0], cata[count][1], 0, None, None]
 		count += 1
 
-	return objects
+	# return objects
