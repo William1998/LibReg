@@ -82,27 +82,34 @@ class ObjDector():
 
         return items,cata,confidences,boxes
 
-    def drawBox(self,items,cata,confidences,boxes,frame):
-        for i in range(len(items)):
+    def drawBox(self,items,frame):
+        for i in items.keys():
+            item = items[i]
+            coord = item[0]
+            frameWidth = frame.shape(1)
+            frameHeight = frame.shape(1)
+            center_x = int(coord[0] * frameWidth)
+            center_y = int(coord[1] * frameHeight)
+            width = int(coord[2] * frameWidth)
+            height = int(coord[3] * frameHeight)
+            left = int(center_x - width / 2)
+            top = int(center_y - height / 2)
 
-            box = boxes[i]
+            box = [left, top, width, height]
             left = box[0]
             top = box[1]
             width = box[2]
             height = box[3]
 
-            classId =cata[i][0]
-            conf = confidences[i]
             right = left + width
             bottom = top + height
 
             # Draw a bounding box.
             cv.rectangle(frame, (left, top), (right, bottom), (255, 178, 50), 3)
 
-            label = '%.2f' % conf
 
             # Get the label for the class name and its confidence
-            label = '%s:%s' % (cata[i][1], label)
+            label = '%s' % (item[2])
 
             # Display the label at the top of the bounding box
             labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
