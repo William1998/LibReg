@@ -4,6 +4,12 @@ import numpy
 import socket
 import struct
 
+def SendFrame(host, port, image):
+    server=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    server.connect((host, port))
+    result, imgencode=cv.imencode('.jpg',image,[cv.IMWRITE_JPEG_QUALITY,50])
+    server.sendall(imgencode)
+
 def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
     buffersize = 65535
     
@@ -18,14 +24,18 @@ def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
         data = numpy.array(bytearray(data))
         imagedecode = cv.imdecode(data, 1)
         print("Received one frame")
-        cv.imshow('frames', imagedecode)
+        #cv.imshow('frames', imagedecode)
         
         # Waitting for frame process function
         
-        if cv.waitKey(1) == 27:
-            break
+        # Send frame to front-end
+        SendFrame(HOST, 10001, imagedecode)
+        #if cv.waitKey(1) == 27:
+        #    break
         
     server.close()
     cv.destroyAllWindows()
+
+# Used to test
 if __name__ == '__main__':
     AcceptImage()
