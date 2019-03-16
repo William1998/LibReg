@@ -40,6 +40,7 @@ class ObjDector():
         tempItems = []
         tempConfidences = []
         tempBoxes = []
+        tempCata=[]
         for out in outs:
             for detection in out:
 
@@ -59,12 +60,10 @@ class ObjDector():
                     if self.classes:
                         assert (classId < len(self.classes))
                         label = '%s:%s' % (self.classes[classId], label)
-                    element = []
-                    element.append(classId)
-                    element.append(label)
-                    element.append(coord)
+                    catainfo = [classId,label]
 
-                    tempItems.append(element)
+                    tempItems.append(coord)
+                    tempCata.append(catainfo)
                     tempConfidences.append(float(confidence))
                     tempBoxes.append([left, top, width, height])
 
@@ -72,16 +71,18 @@ class ObjDector():
         items = []
         confidences = []
         boxes = []
+        cata = []
         for i in indices:
 
             i=i[0]
             items.append(tempItems[i])
             confidences.append(tempConfidences[i])
             boxes.append(tempBoxes[i])
+            cata.append(tempCata[i])
 
-        return items,confidences,boxes
+        return items,cata,confidences,boxes
 
-    def drawBox(self,items,confidences,boxes,frame):
+    def drawBox(self,items,cata,confidences,boxes,frame):
         for i in range(len(items)):
 
             box = boxes[i]
@@ -90,7 +91,7 @@ class ObjDector():
             width = box[2]
             height = box[3]
 
-            classId =items[i][0]
+            classId =cata[i][0]
             conf = confidences[i]
             right = left + width
             bottom = top + height
@@ -101,7 +102,7 @@ class ObjDector():
             label = '%.2f' % conf
 
             # Get the label for the class name and its confidence
-            label = '%s:%s' % (items[i][1], label)
+            label = '%s:%s' % (cata[i][1], label)
 
             # Display the label at the top of the bounding box
             labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
