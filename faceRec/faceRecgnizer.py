@@ -115,5 +115,3 @@ class FaceRecgnizer():
 
 
         return faces, labels
-
-

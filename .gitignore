@@ -1,1 +1,13 @@
+<<<<<<< HEAD
 .idea/
+test.py
+test2.py
+pre-trained-model/
+test/
+__pycache__/object_tracking.cpython-37.pyc
+ObjDectector/__pycache__/ObjDector.cpython-37.pyc
+pre-trained-model/yolov3.weights
+test.py
+=======
+.idea/
+>>>>>>> 1b5a30006579c93b409f27a7404112ede5b7c0b2
