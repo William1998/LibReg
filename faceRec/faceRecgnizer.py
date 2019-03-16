@@ -12,8 +12,9 @@ class FaceRecgnizer():
             print("No model, train initial one")
             faces, labels = self.prepare_training_data("initialFaces/")
             self.model.train(faces, np.array(labels))
-            self.model.write("faceModel/faceModel.XML")
+            self.model.write(self.modelPath)
             print("initial model train finish")
+
     def predict(self,path):
         image = cv.imread(path)
 
@@ -21,6 +22,13 @@ class FaceRecgnizer():
         face, rect = self.detect_face(image)
         label,confidence = self.model.predict(face)
         print(label, confidence)
+
+    def updateModel(self,path):
+        faces, labels = self.prepare_training_data(path)
+        self.model.update(faces,labels)
+        self.model.write(self.modelPath)
+        print("update done")
+
     def detect_face(self,img):
         # convert the test image to gray image as opencv face detector expects gray images
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
