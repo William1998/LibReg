@@ -75,7 +75,6 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 	# objects = ct.update(rects)
 
 	count = 0
-	print(len(detections))
 	for key, value in ct.update(rects).items():
 		# update the coordinates of an object if it already exists
 
@@ -91,8 +90,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 			objects[key][0] = detections[count]
 			objects[key][1] = cata[count][0]
 			objects[key][2] = cata[count][1]
-			print(objects[key][2])
-			print(objects[key][3])
+
 			if objects[key][2] == 'person' and objects[key][3] == 0:
 				print("Perform face detection: ", objects[key][2])
 				img = x.cropImage(frame,objects[key][0])
@@ -119,14 +117,14 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 					strangerList.pop(0)
 			elif objects[key][2] != "person" and objects[key][0][1] < 0.5 and objects[key][5] is None:
 				personKey = nearstPerson(key,objects)
-				if objects[personKey][4] is None and personKey in strangerList:
+				if personKey is not None and objects[personKey][4] is None and personKey in strangerList:
 					print("Find Nearst Person")
 					nameCount += 1
 					faceRec.updateModel(strangerList[personKey],nameCount)
 					with open("count") as f:
 						f.write(nameCount)
 					objects[key][5] = nameCount
-				else:
+				elif personKey is not None:
 					objects[key][5] = objects[personKey][4]
 
 		elif count < len(detections):

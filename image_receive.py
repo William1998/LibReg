@@ -43,7 +43,6 @@ def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
         data, address = server.recvfrom(buffersize) # receive image
         data = numpy.array(bytearray(data))
         imagedecode = cv.imdecode(data, 1)
-        print("Received one frame")
         
         # Waitting for frame process function
         items, cata, confidence, boxed = x.detect(imagedecode)
