@@ -8,6 +8,7 @@ detectedObjects = []
 ct = CentroidTracker()
 
 
+<<<<<<< HEAD
 # while True:
 x = ObjDector.ObjDector()
 
@@ -21,6 +22,12 @@ detectedObjects = track_object(ct, items, [image[0], image[1]])
 
     # x.drawBox(items, confidences, boxes, image)
     # cv.imwrite("./test/testresult.jpg", image.astype(np.uint8))
+=======
+def test(image, tmp):
+    
+    items, cata, confidences, boxes = tmp.detect(image)
+    tmp.drawBox(items, cata, confidences, boxes,image)    
+>>>>>>> f3eeb19ab100a49a98512561fb90937182b89401
 
 
 

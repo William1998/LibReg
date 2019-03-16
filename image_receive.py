@@ -17,10 +17,11 @@ def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
     
     #Create server object
     server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 4096)
     server.bind( (HOST, PORT) )
     
     print("Now waitting for the frame")
-    x = ObjDector.ObjDector()
+    x = ObjDector.ObjDector('/home/wei/repos/LibReg/pre-trained-model/yolov3.weights', "/home/wei/repos/LibReg/pre-trained-model/yolov3.cfg", 288)
     while True:
         data, address = server.recvfrom(buffersize) # receive image
         data = numpy.array(bytearray(data))
@@ -28,9 +29,6 @@ def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
         print("Received one frame")
         
         # Waitting for frame process function
-        
-        # Send frame to front-end
-        #SendFrame(HOST, 10001, imagedecode)
         test.test(imagedecode, x)
         cv.imshow('frames', imagedecode)
         if cv.waitKey(1) == 27:
@@ -38,4 +36,5 @@ def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
         
     server.close()
     cv.destroyAllWindows()
+
 AcceptImage()

@@ -2,21 +2,21 @@ import cv2 as cv
 import numpy as np
 
 class ObjDector():
-    def __init__(self, modelPath):
+    def __init__(self, modelPath,cfgPath,pixel):
         self.confThreshold = 0.2  # Confidence threshold
         self.nmsThreshold = 0.3  # Non-maximum suppression threshold
-        self.inpWidth = 288  # Width of network's input image
-        self.inpHeight = 288  # Height of network's input image
+        self.inpWidth = pixel  # Width of network's input image
+        self.inpHeight = pixel  # Height of network's input image
 
         # Load names of classes
-        self.classesFile = "./pre-trained-model/coco.names";
+        self.classesFile = "./pre-trained-model/coco.names"
         self.classes = None
         with open(self.classesFile, 'rt') as f:
             self.classes = f.read().rstrip('\n').split('\n')
 
         # Give the configuration and weight files for the model and load the network using them.
-        modelConfiguration = "./pre-trained-model/yolov3.cfg";
-        modelWeights = modelPath;
+        modelConfiguration = cfgPath
+        modelWeights = modelPath
 
         self.net = cv.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
         self.net.setPreferableBackend(cv.dnn.DNN_BACKEND_OPENCV)
