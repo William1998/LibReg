@@ -6,8 +6,8 @@ import numpy as np
 
 def test(image, tmp):
     
-    items, confidences, boxes = tmp.detect(image)
-    tmp.drawBox(items, confidences, boxes,image)    
+    items, cata, confidences, boxes = tmp.detect(image)
+    tmp.drawBox(items, cata, confidences, boxes,image)    
 
 
 
