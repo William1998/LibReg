@@ -5,6 +5,7 @@
 #from pyimagesearch.centroidtracker import CentroidTracker
 #from imutils.video import VideoStream
 import numpy as np
+import cv2 as cv
 from collections import OrderedDict
 
 # import cv2
@@ -48,7 +49,7 @@ from collections import OrderedDict
 # net.setInput(blob)
 
 
-def track_object(ct, objects, items, cata, size):
+def track_object(ct, objects, items, cata, size,frame, faceRec,x):
 	detections = items
 	rects = []
 	H = size[0]
@@ -77,12 +78,23 @@ def track_object(ct, objects, items, cata, size):
 	count = 0
 	for key, value in ct.update(rects).items():
 		# update the coordinates of an object if it already exists
-		if count >= len(detections):
+
+		if ct.disappeared[key] > 2:
+			del objects[key]
 			break
+
 		if key in objects:
 			objects[key][0] = detections[count]
+			if objects[key][2] == "Person" and objects[key][3] == 0:
+				img = x.cropImage(frame,objects[key][0])
+				cv.imwrite("./cache/tempFace.jpg", img.astype(np.uint8))
+				label, confidence = faceRec.predict("./cache/tempFace.jpg")
+				objects[key][3] = 1
+				if confidence >= 0.5:
+					objects[key][4] = label
 		else:
 			objects[key] = [detections[count], cata[count][0], cata[count][1], 0, None, None]
+
 		count += 1
 
 	# return objects

@@ -3,7 +3,7 @@ import numpy as np
 
 class ObjDector():
     def __init__(self, modelPath,cfgPath,pixel):
-        self.confThreshold = 0.2  # Confidence threshold
+        self.confThreshold = 0.35  # Confidence threshold
         self.nmsThreshold = 0.3  # Non-maximum suppression threshold
         self.inpWidth = pixel  # Width of network's input image
         self.inpHeight = pixel  # Height of network's input image
@@ -110,6 +110,11 @@ class ObjDector():
 
             # Get the label for the class name and its confidence
             label = '%s:%s' % (item[2],i)
+            if item[4] is not None:
+                label += ":Face:"+item[4]
+
+            if item[5] is not None:
+                label += ":Master:"+item[5]
 
             # Display the label at the top of the bounding box
             labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
@@ -130,3 +135,17 @@ class ObjDector():
         outs = self.net.forward(self.getOutputsNames(self.net))
 
         return self.getCoord(frame,outs)
+
+    def cropImage(self, frame, coord):
+        frameWidth = frame.shape[1]
+        frameHeight = frame.shape[0]
+        center_x = int(coord[0] * frameWidth)
+        center_y = int(coord[1] * frameHeight)
+        width = int(coord[2] * frameWidth)
+        height = int(coord[3] * frameHeight)
+        left = int(center_x - width / 2)
+        top = int(center_y - height / 2)
+
+
+        crop_img = frame[top:top+height,left:left+width]
+        return crop_img

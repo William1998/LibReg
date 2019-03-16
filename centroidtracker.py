@@ -12,7 +12,6 @@ class CentroidTracker():
 		self.nextObjectID = 0
 		self.objects = OrderedDict()
 		self.disappeared = OrderedDict()
-
 		# store the number of maximum consecutive frames a given
 		# object is allowed to be marked as "disappeared" until we
 		# need to deregister the object from tracking

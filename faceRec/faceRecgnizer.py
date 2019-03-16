@@ -113,5 +113,6 @@ class FaceRecgnizer():
                     # add label for this face
                     labels.append(label)
 
-
         return faces, labels
+
+
