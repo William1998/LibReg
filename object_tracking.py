@@ -167,8 +167,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 
 		else:
 			try:
-				coord = np.array(value) / np.array([W, H, W, H])
-				objects[key] = [coord, cata[count][0] if cata[count][0] is not None else None,\
+				objects[key] = [detections[count], cata[count][0] if cata[count][0] is not None else None,\
 								cata[count][1] if cata[count][1] is not None else None, 0, None, None, 0]
 			except Exception as e:
 				print(e)
