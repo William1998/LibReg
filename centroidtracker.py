@@ -12,7 +12,6 @@ class CentroidTracker():
 		self.nextObjectID = 0
 		self.objects = OrderedDict()
 		self.disappeared = OrderedDict()
-		self.relation = OrderedDict()
 		# store the number of maximum consecutive frames a given
 		# object is allowed to be marked as "disappeared" until we
 		# need to deregister the object from tracking
@@ -45,7 +44,6 @@ class CentroidTracker():
 				# missing, deregister it
 				if self.disappeared[objectID] > self.maxDisappeared:
 					self.deregister(objectID)
-					del self.relation[objectID]
 
 			# return early as there are no centroids or tracking info
 			# to update
@@ -65,9 +63,7 @@ class CentroidTracker():
 		# centroids and register each of them
 		if len(self.objects) == 0:
 			for i in range(0, len(inputCentroids)):
-				self.relation[self.nextObjectID] = i
 				self.register(inputCentroids[i])
-
 
 		# otherwise, are are currently tracking objects so we need to
 		# try to match the input centroids to existing object
@@ -116,14 +112,12 @@ class CentroidTracker():
 				# counter
 				objectID = objectIDs[row]
 				self.objects[objectID] = inputCentroids[col]
-				self.relation[objectID] = row
 				self.disappeared[objectID] = 0
 
 				# indicate that we have examined each of the row and
 				# column indexes, respectively
 				usedRows.add(row)
 				usedCols.add(col)
-				count += 1
 
 			# compute both the row and column index we have NOT yet
 			# examined
@@ -147,14 +141,12 @@ class CentroidTracker():
 					# for warrants deregistering the object
 					if self.disappeared[objectID] > self.maxDisappeared:
 						self.deregister(objectID)
-						del self.relation[objectID]
 
 			# otherwise, if the number of input centroids is greater
 			# than the number of existing object centroids we need to
 			# register each new input centroid as a trackable object
 			else:
 				for col in unusedCols:
-					self.relation[self.nextObjectID] = cols.indexof(col)
 					self.register(inputCentroids[col])
 
 		# return the set of trackable objects
