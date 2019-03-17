@@ -10,10 +10,10 @@ from centroidtracker import CentroidTracker
 from faceRec import faceRecgnizer
 
 def SendFrame(host, port, image):
-    server=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    server=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     server.connect((host, port))
     result, imgencode=cv.imencode('.jpg',image,[cv.IMWRITE_JPEG_QUALITY,50])
-    server.sendall(imgencode)
+    server.sendall(image)
 
 def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
     buffersize = 65535 // 2
@@ -50,6 +50,7 @@ def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
         track_object(ct, detectedObjects, items, cata, [imagedecode.shape[0], imagedecode.shape[1]],\
                      imagedecode,faceRec,x,strangerList,nameCount,faceList)
         x.drawBox(detectedObjects,imagedecode,faceList)
+        #SendFrame('192.168.43.160', 8080, imagedecode)
         cv.imshow('frames', imagedecode)
         if cv.waitKey(1) == 27:
             break

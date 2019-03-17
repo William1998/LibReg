@@ -82,11 +82,13 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 		if ct.disappeared[key] > 0:
 			objects[key][7] = 0
 		else:
-			objects[key][7] = 1
+			if key in objects:
+				objects[key][7] = 1
 		if key not in ct.disappeared:
 			del objects[key]
 			continue
-
+		if count >= len(detections):
+			break
 		if key in objects.keys():
 			objects[key][0] = detections[count]
 		        		 
@@ -111,6 +113,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 			elif objects[key][2] != "person" and objects[key][0][1] > 0.5 and objects[key][5] is None:
 				print("some one put thing down!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
 				personKey = nearstPerson(key,objects)
+				objects[key][6] = 0
 
 				if personKey is not None and objects[personKey][4] is None and personKey in strangerList and len(strangerList[personKey])>0:
 					print("Find Nearst Person")
@@ -132,6 +135,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 			elif objects[key][2] != "person" and objects[key][0][1] < 0.5 and objects[key][5] is not None:
 				print("some one take thing away00000000000000000000000000000")
 				personKey = nearstPerson(key, objects)
+				objects[key][6] = 2
 				if personKey is not None:
 					if objects[personKey][4] == objects[key][5]:
 						objects[key][6] = 1
@@ -152,7 +156,9 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 								print("train failxxxxxxxx`")
 								pass
 							print("Taken by stranger")
+							objects[key][6] = 2
 						else:
+							objects[key][6] = 1
 							print("Taken by master")
 					        # push to databse that object taken by master
 

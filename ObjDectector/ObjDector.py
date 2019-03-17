@@ -85,6 +85,8 @@ class ObjDector():
     def drawBox(self,items,frame,faceList):
         for i in items.keys():
             item = items[i]
+            if item[7] == 0:
+                continue
             coord = item[0]
             frameWidth = frame.shape[1]
             frameHeight = frame.shape[0]
@@ -115,9 +117,9 @@ class ObjDector():
 
             if item[5] is not None:
                 label += ":Face:"+str(item[5])
-            thecolor = (255,255,255)
+            thecolor = (0,0,255)
             if item[6] == 0:
-                thecolor = (255, 255, 255)
+                thecolor = (0, 0, 255)
             elif item[6] == 1:
                 thecolor = (34,139,34)
             elif item[6] == 2:
@@ -128,13 +130,13 @@ class ObjDector():
             cv.rectangle(frame, (left, top - round(1.5 * labelSize[1])),
                          (left + round(1.5 * labelSize[0]), top + baseLine),
                          (255, 255, 255), cv.FILLED)
-            cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.75, 1, color=thecolor)
+            cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.75, thecolor, 1)
 
         # Remove the bounding boxes with low confidence
         t, _ = self.net.getPerfProfile()
         
         label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
-        cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, color = (0,0,255))
+        cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5,color = (0,0,255))
 
     def detect(self,frame):
         blob = cv.dnn.blobFromImage(frame, 1 / 255, (self.inpWidth, self.inpHeight), [0, 0, 0], 1, crop=False)
