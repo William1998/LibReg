@@ -80,10 +80,11 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 		# update the coordinates of an object if it already exists
 		
 		if ct.disappeared[key] > 0:
-			try:
-				del objects[key]
-			except:
-				pass
+			objects[key][7] = 0
+		else:
+			objects[key][7] = 1
+		if key not in ct.disappeared:
+			del objects[key]
 			continue
 
 		if key in objects.keys():
@@ -168,11 +169,12 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 		else:
 			try:
 				objects[key] = [detections[count], cata[count][0] if cata[count][0] is not None else None,\
-								cata[count][1] if cata[count][1] is not None else None, 0, None, None, 0]
+								cata[count][1] if cata[count][1] is not None else None, 0, None, None, 0,1]
 			except Exception as e:
 				print(e)
 
-		count += 1
+		if ct.disappeared[key] == 0:
+			count += 1
 	
 
 	# return objects
