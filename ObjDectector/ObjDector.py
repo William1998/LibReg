@@ -3,7 +3,7 @@ import numpy as np
 
 class ObjDector():
     def __init__(self, modelPath,cfgPath,pixel):
-        self.confThreshold = 0.4  # Confidence threshold
+        self.confThreshold = 0.6  # Confidence threshold
         self.nmsThreshold = 0.7  # Non-maximum suppression threshold
         self.inpWidth = pixel  # Width of network's input image
         self.inpHeight = pixel  # Height of network's input image
@@ -116,7 +116,7 @@ class ObjDector():
                 label += ":Face:"+str(item[4])
 
             if item[5] is not None:
-                label += ":Face:"+str(item[5])
+                label += ":Master:"+str(item[5])
             thecolor = (0,255,0)
             if item[6] == 0:
                 thecolor = (0,255,0)

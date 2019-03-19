@@ -30,7 +30,6 @@ class FaceRecgnizer():
         faces= []
         labels = []
         for image in imgList:
-            print(image)
             face, rect = self.detect_face(image)
 
         # ------STEP-4--------

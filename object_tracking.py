@@ -94,7 +94,11 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 				objects[key][7] = 1
 
 			objects[key][0] = detections[count]
-		        		 
+			objects[key][1] = cata[count][0]
+			objects[key][2] = cata[count][1]
+
+			if objects[key][2] == 'person':
+				objects[key][6] = 0
 			if objects[key][2] == 'person' and objects[key][3] == 0:
 				print("Perform face detection: ", objects[key][2])
 				img = x.cropImage(frame,objects[key][0])
@@ -116,7 +120,7 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 
 			elif objects[key][2] != "person" and objects[key][0][1] > 0.5 :
 				print("some one put thing down!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
-				objects[key][6] = 1
+
 				if objects[key][5] is None:
 					personKey = nearstPerson(key,objects)
 
@@ -130,12 +134,14 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 								f.write(nameCount)
 							objects[key][5] = nameCount
 							print("train success~~~~~~`")
+							objects[key][6] = 1
 						except Exception as e:
 							print(e)
 							print("train failxxxxxxxx`")
 							pass
 					elif personKey is not None:
 						objects[key][5] = objects[personKey][4]
+						objects[key][6] = 1
 
 			elif objects[key][2] != "person" and objects[key][0][1] < 0.5 and objects[key][5] is not None:
 				print("some one take thing away00000000000000000000000000000")
