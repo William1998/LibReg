@@ -117,19 +117,25 @@ class ObjDector():
 
             if item[5] is not None:
                 label += ":Face:"+str(item[5])
-            thecolor = (0,0,255)
+            thecolor = (0,255,0)
             if item[6] == 0:
-                thecolor = (0, 0, 255)
+                thecolor = (0,255,0)
             elif item[6] == 1:
-                thecolor = (34,139,34)
+                thecolor = (0,0,255)
+                label += ":Put down"
             elif item[6] == 2:
-                thecolor = (255,0,0)            
+                thecolor = (34,139,34)
+                label += ":Take away by owner"
+            elif item[6] ==3:
+                thecolor = (255,0,0)
+                label += ":Take away by stranger"
+
             # Display the label at the top of the bounding box
             labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
             top = max(top, labelSize[1])
             cv.rectangle(frame, (left, top - round(1.5 * labelSize[1])),
                          (left + round(1.5 * labelSize[0]), top + baseLine),
-                         (255, 255, 255), cv.FILLED)
+                         (0, 0, 0), cv.FILLED)
             cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.75, thecolor, 1)
 
         # Remove the bounding boxes with low confidence

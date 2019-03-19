@@ -75,21 +75,24 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 	# objects = ct.update(rects)
 
 	count = 0
+	trackObjects = ct.update(rects)
 
-	for key, value in ct.update(rects).items():
+	for key in list(set(objects.keys()) - set(trackObjects.keys())):
+			del objects[key]
+
+	for key, value in trackObjects.items():
 		# update the coordinates of an object if it already exists
 		
-		if ct.disappeared[key] > 0:
-			objects[key][7] = 0
-		else:
-			if key in objects:
-				objects[key][7] = 1
-		if key not in ct.disappeared:
-			del objects[key]
-			continue
-		if count >= len(detections):
-			break
+
+
+
 		if key in objects.keys():
+			if ct.disappeared[key] > 0:
+				objects[key][7] = 0
+				continue
+			else:
+				objects[key][7] = 1
+
 			objects[key][0] = detections[count]
 		        		 
 			if objects[key][2] == 'person' and objects[key][3] == 0:
@@ -110,27 +113,29 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 					print(e)
 					print("failed")
 					pass
-			elif objects[key][2] != "person" and objects[key][0][1] > 0.5 and objects[key][5] is None:
-				print("some one put thing down!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
-				personKey = nearstPerson(key,objects)
-				objects[key][6] = 0
 
-				if personKey is not None and objects[personKey][4] is None and personKey in strangerList and len(strangerList[personKey])>0:
-					print("Find Nearst Person")
-					nameCount += 1
-					try:
-						faceRec.updateModel(strangerList[personKey],nameCount)
-						with open("count") as f:
-							f.write(nameCount)
-						objects[key][5] = nameCount
-						print("train success~~~~~~`")
-					except Exception as e:
-						print(e)
-						print("train failxxxxxxxx`")
-						pass
-				elif personKey is not None:
-					objects[key][5] = objects[personKey][4]
-				objects[key][6] = 0
+			elif objects[key][2] != "person" and objects[key][0][1] > 0.5 :
+				print("some one put thing down!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
+				objects[key][6] = 1
+				if objects[key][5] is None:
+					personKey = nearstPerson(key,objects)
+
+
+					if personKey is not None and objects[personKey][4] is None and personKey in strangerList and len(strangerList[personKey])>0:
+						print("Find Nearst Person")
+						nameCount += 1
+						try:
+							faceRec.updateModel(strangerList[personKey],nameCount)
+							with open("count") as f:
+								f.write(nameCount)
+							objects[key][5] = nameCount
+							print("train success~~~~~~`")
+						except Exception as e:
+							print(e)
+							print("train failxxxxxxxx`")
+							pass
+					elif personKey is not None:
+						objects[key][5] = objects[personKey][4]
 
 			elif objects[key][2] != "person" and objects[key][0][1] < 0.5 and objects[key][5] is not None:
 				print("some one take thing away00000000000000000000000000000")
@@ -138,10 +143,10 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 				objects[key][6] = 2
 				if personKey is not None:
 					if objects[personKey][4] == objects[key][5]:
-						objects[key][6] = 1
+						objects[key][6] = 2
 						#push to databse that object taken by master
 					else:
-						objects[key][6] = 2
+						objects[key][6] = 3
 						if objects[key][5] is None:
 							nameCount += 1
 
@@ -156,10 +161,10 @@ def track_object(ct, objects, items, cata, size,frame, faceRec,x,strangerList,na
 								print("train failxxxxxxxx`")
 								pass
 							print("Taken by stranger")
-							objects[key][6] = 2
+							objects[key][6] = 3
 						else:
-							objects[key][6] = 1
-							print("Taken by master")
+							objects[key][6] = 3
+							print("Taken by other")
 					        # push to databse that object taken by master
 
 			

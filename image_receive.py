@@ -15,8 +15,8 @@ def SendFrame(host, port, image):
     result, imgencode=cv.imencode('.jpg',image,[cv.IMWRITE_JPEG_QUALITY,50])
     server.sendall(image)
 
-def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
-    buffersize = 65535 // 2
+def AcceptImage(HOST = 'localhost', PORT = 10000):
+    buffersize = 65535 // 3
     
     #Create server object
     server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -32,7 +32,7 @@ def AcceptImage(HOST = '192.168.43.79', PORT = 10000):
     faceRec = faceRecgnizer.FaceRecgnizer()
     
     print("Now waitting for the frame")
-    x = ObjDector.ObjDector('pre-trained-model/yolov3.weights', "pre-trained-model/yolov3.cfg", 288)
+    x = ObjDector.ObjDector('pre-trained-model/yolov3.weights', "pre-trained-model/yolov3.cfg", 416)
 
     #Global things
     detectedObjects = OrderedDict()
